@@ -1,0 +1,6 @@
+body {
+  font-family: 'Caviar Dreams', Arial, sans-serif;
+  background: linear-gradient(135deg, #f8bbd0 0%, #ede7f6 100%);
+  margin: 0;
+}
+button:focus { outline: none; }
