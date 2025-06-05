@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { ref, set, remove, onValue, off } from "firebase/database";
 
+const ADMIN_PASSWORD = "777888";
+
 const SACRIFICES = [
   { key: "coward", name: "Coward's Sacrifice", burn: 3, success: 10, partial: 30, fail: 60, icon: "🐇" },
   { key: "tiny", name: "Tiny Sacrifice", burn: 5, success: 25, partial: 45, fail: 30, icon: "🕯️" },
@@ -493,6 +495,63 @@ function UserScreen() {
 // === ADMIN SCREEN ===
 // (Sadece temel senkronizasyon, onay ve sonuç kodları. Gerekirse geliştiririz.)
 function AdminScreen() {
+
+   const [auth, setAuth] = useState(false);
+  const [pass, setPass] = useState("");
+  const [fail, setFail] = useState(false);
+
+  if (!auth) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #f8bbd0 0%, #ede7f6 100%)"
+      }}>
+        <div style={{
+          padding: 32,
+          background: "white",
+          borderRadius: 20,
+          boxShadow: "0 4px 24px #2222"
+        }}>
+          <h2 style={{ color: "#C026D3", textAlign: "center" }}>NB Admin Giriş</h2>
+          <input
+            type="password"
+            value={pass}
+            onChange={e => { setPass(e.target.value); setFail(false); }}
+            placeholder="Admin Password"
+            style={{
+              padding: "10px 18px",
+              fontSize: 18,
+              borderRadius: 8,
+              border: "1.5px solid #C026D3",
+              marginBottom: 10,
+              width: "100%"
+            }}
+          />
+          <button
+            onClick={() => {
+              if (pass === ADMIN_PASSWORD) setAuth(true);
+              else setFail(true);
+            }}
+            style={{
+              width: "100%",
+              padding: "10px 0",
+              borderRadius: 12,
+              background: "#C026D3",
+              color: "white",
+              fontWeight: 600,
+              border: "none",
+              fontSize: 17,
+              cursor: "pointer"
+            }}
+          >Giriş</button>
+          {fail && <div style={{ color: "#dc2626", marginTop: 7 }}>Hatalı şifre!</div>}
+        </div>
+      </div>
+    );
+  }
   const [ritual, ] = useRitualSync();
   const [selected, setSelected] = useState(null);
 
