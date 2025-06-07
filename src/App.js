@@ -6,8 +6,8 @@ import { ref, set, remove, onValue, off } from "firebase/database";
 const ADMIN_PASSWORD = "777888";
 
 const SACRIFICES = [
-  { key: "coward", name: "Coward's Sacrifice", burn: 3, success: 10, partial: 30, fail: 60, icon: "🐇" },
-  { key: "tiny", name: "Tiny Sacrifice", burn: 5, success: 25, partial: 45, fail: 30, icon: "🕯️" },
+  { key: "coward", name: "Cowardly Sacrifice", burn: 3, success: 10, partial: 30, fail: 60, icon: "🐇" },
+  { key: "tiny", name: "Small Sacrifice", burn: 5, success: 25, partial: 45, fail: 30, icon: "🕯️" },
   { key: "high", name: "High Sacrifice", burn: 7, success: 50, partial: 35, fail: 15, icon: "🔥" },
   { key: "full", name: "Full Sacrifice", burn: 9, success: 75, partial: 20, fail: 5, icon: "💎" },
   { key: "absolute", name: "Absolute Sacrifice", burn: 12, success: 95, partial: 4, fail: 1, icon: "👑" }
@@ -194,7 +194,7 @@ function UserScreen() {
           marginBottom: 24,
           textAlign: "center",
           color: "#C026D3"
-        }}>Upgrade Ritual</h1>
+        }}>The Offering Table</h1>
 
         {/* INPUT SCREEN */}
         {step === "input" && (
