@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { ref, set, remove, onValue, off } from "firebase/database";
 
+// Admin password
 const ADMIN_PASSWORD = "777888";
 
 const SACRIFICES = [
@@ -41,7 +42,7 @@ function getVipBonus(vipStr) {
   return 0;
 }
 
-// FIREBASE SYNCHRONIZATION
+// Firebase Sync
 const RITUAL_PATH = "activeRitual";
 function setRitual(data) {
   return set(ref(db, RITUAL_PATH), data);
@@ -49,7 +50,6 @@ function setRitual(data) {
 function clearRitual() {
   return remove(ref(db, RITUAL_PATH));
 }
-
 function useRitualSync() {
   const [ritual, setRitualState] = useState(null);
   useEffect(() => {
@@ -65,7 +65,6 @@ function useRitualSync() {
 // === USER SCREEN ===
 function UserScreen() {
   const [ritual, ] = useRitualSync();
-
   const [step, setStep] = useState("input"); // input, bonus, waitNbConfirm, ritual, waiting, result
   const [name, setName] = useState("");
   const [vip, setVip] = useState("");
@@ -74,11 +73,8 @@ function UserScreen() {
   const [epicInput, setEpicInput] = useState("");
   const [bonusError, setBonusError] = useState("");
   const [selected, setSelected] = useState(null);
-
-  // Local kopyada sonucu göstermek için
   const [result, setResult] = useState(null);
 
-  // STEP KONTROLLERİ (Ritüel ve NB ile eşleşme)
   useEffect(() => {
     if (!ritual) {
       setStep("input");
@@ -94,28 +90,26 @@ function UserScreen() {
     }
   }, [ritual]);
 
-  // ADIM 1: İSİM + VIP GİRİŞ
   const handleConfirmInput = () => {
     if (!name || !vip) {
-      setInputError("Lütfen oyuncu adı ve VIP seviyesini girin.");
+      setInputError("Please enter your player name and VIP level.");
       return;
     }
     if (name.length > 10) {
-      setInputError("Oyuncu adı maksimum 10 karakter olabilir!");
+      setInputError("Player name must be at most 10 characters!");
       return;
     }
     if (!/^[1-9]$/.test(vip)) {
-      setInputError("Sadece rakam ile giriş yapabilirsiniz (1-9)!");
+      setInputError("Please enter VIP level as a single digit (1-9)!");
       return;
     }
     setInputError("");
     setStep("bonus");
   };
 
-  // ADIM 2: BONUS SORULARI
   const handleConfirmBonus = () => {
     if (!["Y", "N"].includes(legendaryInput) || !["Y", "N"].includes(epicInput)) {
-      setBonusError("Her iki soruya da yalnızca Y veya N ile cevap verebilirsin.");
+      setBonusError("Please answer both questions with only Y or N.");
       return;
     }
     setBonusError("");
@@ -126,7 +120,6 @@ function UserScreen() {
     setStep("waitNbConfirm");
   };
 
-  // ADIM 3: FEDAYI SEÇİP BAŞLAT
   const startRitual = () => {
     if (!selected) return;
     setRitual({
@@ -140,7 +133,6 @@ function UserScreen() {
     setStep("waiting");
   };
 
-  // RESET
   const resetAll = () => {
     clearRitual();
     setStep("input");
@@ -154,7 +146,6 @@ function UserScreen() {
     setBonusError("");
   };
 
-  // BONUSES (Yalnızca ritüel ekranında hesaplanır)
   let bonusLegendary = false, bonusEpic = false, vipBonus = 0;
   let currentVip = vip, infoLines = [];
   if (ritual && ritual.player) {
@@ -166,15 +157,15 @@ function UserScreen() {
   let totalBonus = 0;
   if (bonusLegendary) {
     totalBonus += 2;
-    infoLines.push("En az 3 efsanevi fotoğraf yakılacak: +%2 ek şans.");
+    infoLines.push("At least 3 legendary photos will be burned: +2% extra chance.");
   }
   if (bonusEpic) {
     totalBonus += 1;
-    infoLines.push("En az 4 epik fotoğraf yakılacak: +%1 ek şans.");
+    infoLines.push("At least 4 epic photos will be burned: +1% extra chance.");
   }
   if (vipBonus > 0) {
     totalBonus += vipBonus;
-    infoLines.push(`VIP bonusu: +%${vipBonus} ek şans.`);
+    infoLines.push(`VIP bonus: +${vipBonus}% extra chance.`);
   }
 
   return (
@@ -203,14 +194,14 @@ function UserScreen() {
           marginBottom: 24,
           textAlign: "center",
           color: "#C026D3"
-        }}>Yükseltme Ritüeli</h1>
+        }}>Upgrade Ritual</h1>
 
-        {/* İSİM-VIP GİRİŞ */}
+        {/* INPUT SCREEN */}
         {step === "input" && (
           <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <input
               type="text"
-              placeholder="Oyuncu Adı"
+              placeholder="Player Name"
               value={name}
               maxLength={10}
               onChange={e => {
@@ -228,7 +219,7 @@ function UserScreen() {
             />
             <input
               type="text"
-              placeholder="VIP Seviyesi (1-9)"
+              placeholder="VIP Level (1-9)"
               value={vip}
               onChange={e => {
                 setVip(e.target.value);
@@ -259,16 +250,16 @@ function UserScreen() {
                 cursor: "pointer"
               }}
               onClick={handleConfirmInput}
-            >Onayla</button>
+            >Confirm</button>
           </div>
         )}
 
-        {/* BONUS SORULARI */}
+        {/* BONUS QUESTIONS */}
         {step === "bonus" && (
           <div style={{ width: "100%", maxWidth: 400 }}>
-            <div style={{ marginBottom: 12, fontWeight: 600 }}>Ekstra bonus kazanmak için:</div>
+            <div style={{ marginBottom: 12, fontWeight: 600 }}>Answer for bonus chance:</div>
             <div style={{ marginBottom: 8 }}>
-              <label>En az 3 efsanevi fotoğraf yakacak mısın? (Y/N): </label>
+              <label>Will you burn at least 3 legendary photos? (Y/N): </label>
               <input
                 type="text"
                 maxLength={1}
@@ -277,7 +268,7 @@ function UserScreen() {
               />
             </div>
             <div style={{ marginBottom: 8 }}>
-              <label>En az 4 epik fotoğraf yakacak mısın? (Y/N): </label>
+              <label>Will you burn at least 4 epic photos? (Y/N): </label>
               <input
                 type="text"
                 maxLength={1}
@@ -302,12 +293,12 @@ function UserScreen() {
                 cursor: "pointer"
               }}
             >
-              Onayla ve NB’ye Gönder
+              Confirm and Send to NB
             </button>
           </div>
         )}
 
-        {/* NB ONAYI BEKLENİYOR */}
+        {/* WAITING FOR NB APPROVAL */}
         {step === "waitNbConfirm" && (
           <div style={{
             minHeight: 180,
@@ -317,15 +308,15 @@ function UserScreen() {
             justifyContent: "center"
           }}>
             <div style={{ fontWeight: "bold", color: "#C026D3", fontSize: 20, marginBottom: 10 }}>
-              NB onayı bekleniyor...
+              Waiting for NB approval...
             </div>
             <div style={{ fontSize: 16, color: "#64748b", fontStyle: "italic" }}>
-              Oyuncu adı: <b>{name}</b><br />VIP seviyesi: <b>{vip}</b>
+              Player: <b>{name}</b><br />VIP: <b>{vip}</b>
             </div>
           </div>
         )}
 
-        {/* RİTÜEL SEÇİMİ */}
+        {/* RITUAL SELECTION */}
         {step === "ritual" && ritual && ritual.player && (
           <div style={{
             width: "100%",
@@ -355,7 +346,7 @@ function UserScreen() {
               </div>
             )}
             <div style={{ fontWeight: 600, marginBottom: 6, color: "#C026D3" }}>
-              Oyuncu adı: {ritual.player?.name} | VIP: {ritual.player?.vip}
+              Player: {ritual.player?.name} | VIP: {ritual.player?.vip}
             </div>
             {SACRIFICES.map((sac) => {
               let localBonus = 0;
@@ -420,7 +411,7 @@ function UserScreen() {
           </div>
         )}
 
-        {/* NB ONAY BEKLENİYOR */}
+        {/* WAITING FOR NB */}
         {step === "waiting" && (
           <div style={{
             minHeight: 180,
@@ -446,6 +437,8 @@ function UserScreen() {
             </div>
           </div>
         )}
+
+        {/* RESULT */}
         {step === "result" && result && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 32 }}>
             <div style={{ fontSize: 42, marginBottom: 12 }}>
@@ -492,10 +485,9 @@ function UserScreen() {
   );
 }
 
-// === ADMIN SCREEN ===
-// (Sadece temel senkronizasyon, onay ve sonuç kodları. Gerekirse geliştiririz.)
+// === NB ADMIN SCREEN ===
 function AdminScreen() {
-  // BÜTÜN HOOK'LAR FONKSİYONUN EN ÜSTÜNDE!
+  // ALL HOOKS AT THE TOP!
   const [auth, setAuth] = useState(false);
   const [pass, setPass] = useState("");
   const [fail, setFail] = useState(false);
@@ -503,7 +495,6 @@ function AdminScreen() {
   const [ritual, ] = useRitualSync();
   const [selected, setSelected] = useState(null);
 
-  // Bonusları ve infoLines'ı hesapla (UserScreen ile aynı)
   let bonusLegendary = false, bonusEpic = false, vipBonus = 0;
   let currentVip = "", infoLines = [];
   if (ritual && ritual.player) {
@@ -515,18 +506,18 @@ function AdminScreen() {
   let totalBonus = 0;
   if (bonusLegendary) {
     totalBonus += 2;
-    infoLines.push("En az 3 efsanevi fotoğraf yakılacak: +%2 ek şans.");
+    infoLines.push("At least 3 legendary photos will be burned: +2% extra chance.");
   }
   if (bonusEpic) {
     totalBonus += 1;
-    infoLines.push("En az 4 epik fotoğraf yakılacak: +%1 ek şans.");
+    infoLines.push("At least 4 epic photos will be burned: +1% extra chance.");
   }
   if (vipBonus > 0) {
     totalBonus += vipBonus;
-    infoLines.push(`VIP bonusu: +%${vipBonus} ek şans.`);
+    infoLines.push(`VIP bonus: +${vipBonus}% extra chance.`);
   }
 
-  // ŞİFRE EKRANI
+  // ADMIN PASSWORD SCREEN
   if (!auth) {
     return (
       <div style={{
@@ -542,7 +533,7 @@ function AdminScreen() {
           borderRadius: 20,
           boxShadow: "0 4px 24px #2222"
         }}>
-          <h2 style={{ color: "#C026D3", textAlign: "center" }}>NB Admin Giriş</h2>
+          <h2 style={{ color: "#C026D3", textAlign: "center" }}>NB Admin Login</h2>
           <input
             type="password"
             value={pass}
@@ -573,14 +564,14 @@ function AdminScreen() {
               fontSize: 17,
               cursor: "pointer"
             }}
-          >Giriş</button>
-          {fail && <div style={{ color: "#dc2626", marginTop: 7 }}>Hatalı şifre!</div>}
+          >Login</button>
+          {fail && <div style={{ color: "#dc2626", marginTop: 7 }}>Wrong password!</div>}
         </div>
       </div>
     );
   }
 
-  // NB Onayı
+  // NB Approvals
   const handleApproveInput = () => {
     setRitual({ ...ritual, status: "nbconfirmed" });
   };
@@ -609,7 +600,7 @@ function AdminScreen() {
     clearRitual();
   };
 
-  // --- NB PANELİ ---
+  // --- NB PANEL ---
   return (
     <div style={{
       minHeight: "100vh",
@@ -642,32 +633,32 @@ function AdminScreen() {
             <>No rituals waiting.<br /><span style={{ color: "#C026D3" }}>Awaiting moonlit offerings...</span></>
           ) : (
             <>
-              Oyuncu adı: {ritual.player?.name} | VIP: {ritual.player?.vip}
+              Player: {ritual.player?.name} | VIP: {ritual.player?.vip}
               <br />
-              {ritual.status === "waitingNb" && <span style={{ color: "#7c3aed" }}>Oyuncu girişi bekleniyor...</span>}
-              {ritual.status === "nbconfirmed" && <span style={{ color: "#7c3aed" }}>Oyuncu ritüel seçimi ekranında.</span>}
-              {ritual.status === "waiting" && <span style={{ color: "#7c3aed" }}>Oyuncu NB onayını bekliyor.</span>}
-              {ritual.status === "result" && <span style={{ color: "#7c3aed" }}>Ritüel sonucu görüntüleniyor.</span>}
+              {ritual.status === "waitingNb" && <span style={{ color: "#7c3aed" }}>Waiting for player confirmation...</span>}
+              {ritual.status === "nbconfirmed" && <span style={{ color: "#7c3aed" }}>Player is at the ritual selection screen.</span>}
+              {ritual.status === "waiting" && <span style={{ color: "#7c3aed" }}>Waiting for NB approval...</span>}
+              {ritual.status === "result" && <span style={{ color: "#7c3aed" }}>Result is being displayed.</span>}
             </>
           )}
         </div>
-        {/* Oyuncu girişi onayı */}
+        {/* Player confirmation */}
         {ritual && ritual.status === "waitingNb" && (
           <div style={{
             margin: "16px 0", width: "100%", textAlign: "center",
             border: "2px dashed #C026D3", borderRadius: 10, padding: 12, background: "#f3e8ff"
           }}>
             <div style={{ fontWeight: 500, marginBottom: 6 }}>
-              Oyuncu adı: <span style={{ color: "#C026D3" }}>{ritual.player.name}</span>
+              Player: <span style={{ color: "#C026D3" }}>{ritual.player.name}</span>
             </div>
             <div style={{ fontWeight: 500, marginBottom: 12 }}>
-              VIP seviyesi: <span style={{ color: "#C026D3" }}>{ritual.player.vip}</span>
+              VIP Level: <span style={{ color: "#C026D3" }}>{ritual.player.vip}</span>
             </div>
             <div style={{ fontWeight: 500, marginBottom: 8 }}>
-              En az 3 efsanevi fotoğraf yakacak mı?: <span>{ritual.player.legendaryInput}</span>
+              Burn at least 3 legendary photos?: <span>{ritual.player.legendaryInput}</span>
             </div>
             <div style={{ fontWeight: 500, marginBottom: 8 }}>
-              En az 4 epik fotoğraf yakacak mı?: <span>{ritual.player.epicInput}</span>
+              Burn at least 4 epic photos?: <span>{ritual.player.epicInput}</span>
             </div>
             <button
               style={{
@@ -683,12 +674,12 @@ function AdminScreen() {
               }}
               onClick={handleApproveInput}
             >
-              Oyuncuyu Onayla
+              Confirm Player
             </button>
           </div>
         )}
 
-        {/* NB - Oyuncu ritüel seçimi ekranı */}
+        {/* NB - Player ritual selection */}
         {ritual && ritual.status === "nbconfirmed" && ritual.player && (
           <div style={{
             width: "100%",
@@ -719,7 +710,7 @@ function AdminScreen() {
               </div>
             )}
             <div style={{ fontWeight: 600, marginBottom: 6, color: "#C026D3" }}>
-              Oyuncu adı: {ritual.player?.name} | VIP: {ritual.player?.vip}
+              Player: {ritual.player?.name} | VIP: {ritual.player?.vip}
             </div>
             {SACRIFICES.map((sac) => {
               let localBonus = 0;
@@ -763,12 +754,12 @@ function AdminScreen() {
               );
             })}
             <div style={{ marginTop: 18, color: "#64748b", fontSize: 15, fontStyle: "italic" }}>
-              (Oyuncu ritüel seçimini bekliyor...)
+              (Waiting for player's ritual choice...)
             </div>
           </div>
         )}
 
-        {/* NB ONAYI */}
+        {/* NB APPROVAL */}
         {ritual && ritual.status === "waiting" && (
           <div style={{
             display: "flex", flexDirection: "column",
@@ -778,11 +769,11 @@ function AdminScreen() {
               Ritual Approval Request
             </div>
             <div>
-              <span style={{ fontWeight: 600 }}>Oyuncu adı: </span>
+              <span style={{ fontWeight: 600 }}>Player: </span>
               {ritual.player?.name}
             </div>
             <div>
-              <span style={{ fontWeight: 600 }}>VIP seviyesi: </span>
+              <span style={{ fontWeight: 600 }}>VIP: </span>
               {ritual.player?.vip}
             </div>
             <div>
@@ -809,7 +800,7 @@ function AdminScreen() {
           </div>
         )}
 
-        {/* SONUÇ */}
+        {/* RESULT */}
         {ritual && ritual.status === "result" && ritual.result && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 32 }}>
             <div style={{ fontSize: 42, marginBottom: 12 }}>
@@ -857,8 +848,7 @@ function AdminScreen() {
   );
 }
 
-
-// === ANA APP ===
+// === APP ROOT ===
 function App() {
   const [screen, setScreen] = useState("user");
   useEffect(() => {
