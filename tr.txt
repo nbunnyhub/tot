@@ -637,21 +637,20 @@ function AdminScreen() {
           textAlign: "center",
           color: "#C026D3"
         }}>NB Admin Panel</h1>
-       <div style={{ color: "#64748b", textAlign: "center", fontSize: 16 }}>
-  {!ritual ? (
-    <>No rituals waiting.<br /><span style={{ color: "#C026D3" }}>Awaiting moonlit offerings...</span></>
-  ) : (
-    <>
-      Player name: {ritual.player?.name} | VIP: {ritual.player?.vip}
-      <br />
-      {ritual.status === "waitingNb" && <span style={{ color: "#7c3aed" }}>Waiting for NB approval...</span>}
-      {ritual.status === "nbconfirmed" && <span style={{ color: "#7c3aed" }}>Player is at ritual selection screen.</span>}
-      {ritual.status === "waiting" && <span style={{ color: "#7c3aed" }}>Player is waiting NB’s approval.</span>}
-      {ritual.status === "result" && <span style={{ color: "#7c3aed" }}>Ritual result is visible.</span>}
-    </>
-  )}
-</div>
-
+        <div style={{ color: "#64748b", textAlign: "center", fontSize: 16 }}>
+          {(!ritual || !ritual.player) ? (
+            <>No rituals waiting.<br /><span style={{ color: "#C026D3" }}>Awaiting moonlit offerings...</span></>
+          ) : (
+            <>
+              Oyuncu adı: {ritual.player?.name} | VIP: {ritual.player?.vip}
+              <br />
+              {ritual.status === "waitingNb" && <span style={{ color: "#7c3aed" }}>Oyuncu girişi bekleniyor...</span>}
+              {ritual.status === "nbconfirmed" && <span style={{ color: "#7c3aed" }}>Oyuncu ritüel seçimi ekranında.</span>}
+              {ritual.status === "waiting" && <span style={{ color: "#7c3aed" }}>Oyuncu NB onayını bekliyor.</span>}
+              {ritual.status === "result" && <span style={{ color: "#7c3aed" }}>Ritüel sonucu görüntüleniyor.</span>}
+            </>
+          )}
+        </div>
         {/* Oyuncu girişi onayı */}
         {ritual && ritual.status === "waitingNb" && (
           <div style={{
