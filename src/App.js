@@ -581,9 +581,14 @@ function AdminScreen() {
   }
 
   // NB Onayı
-  const handleApproveInput = () => {
-    setRitual({ ...ritual, status: "nbconfirmed" });
-  };
+ const handleApproveInput = () => {
+  if (!ritual?.player) return;
+  setRitual({
+    ...ritual,
+    status: "nbconfirmed",
+    ts: Date.now(),
+  });
+};
 
   const handleApprove = () => {
     if (!ritual || !ritual.sacrifice) return;
