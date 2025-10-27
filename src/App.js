@@ -113,18 +113,32 @@ function UserScreen() {
   };
 
   // ADIM 2: BONUS SORULARI
-  const handleConfirmBonus = () => {
-    if (!["Y", "N"].includes(legendaryInput) || !["Y", "N"].includes(epicInput)) {
-      setBonusError("Her iki soruya da yalnızca Y veya N ile cevap verebilirsin.");
-      return;
-    }
-    setBonusError("");
-    setRitual({
-      status: "waitingNb",
-      player: { name, vip, legendaryInput, epicInput }
-    });
-    setStep("waitNbConfirm");
+  // TEMP DEBUG: replace existing handleConfirmBonus
+const handleConfirmBonus = async () => {
+  if (!["Y", "N"].includes(legendaryInput) || !["Y", "N"].includes(epicInput)) {
+    setBonusError("Only Y or N allowed for both questions.");
+    return;
+  }
+  setBonusError("");
+
+  const payload = {
+    status: "waitingNb",
+    player: { name, vip, legendaryInput, epicInput },
+    time: Date.now()
   };
+
+  console.log("DEBUG: about to write activeRitual payload:", payload);
+
+  try {
+    // setRitual is the firebase setter defined at top of App.js
+    await setRitual(payload);
+    console.log("DEBUG: setRitual succeeded");
+    setStep("waitNbConfirm");
+  } catch (err) {
+    console.error("DEBUG: setRitual FAILED:", err);
+    setBonusError("Failed to send ritual to NB: " + (err && err.message ? err.message : String(err)));
+  }
+};
 
   // ADIM 3: FEDAYI SEÇİP BAŞLAT
   const startRitual = () => {
@@ -595,8 +609,27 @@ function AdminScreen() {
     let bonus = 0;
     if (ritual.sacrifice !== "absolute") bonus = totalBonus;
     const sac = SACRIFICES.find((s) => s.key === ritual.sacrifice);
-    const success = sac.success + (sac.key !== "absolute" ? bonus : 0);
-    const fail = sac.fail - (sac.key !== "absolute" ? bonus : 0);
+    let success = sac.success + (sac.key !== "absolute" ? bonus : 0);
+    let fail = sac.fail - (sac.key !== "absolute" ? bonus : 0);
+
+// 🔮 FULL SACRIFICE KORUMA KOŞULU
+if (sac.key === "full") {
+  // Minimum %1 fail oranını koru
+  if (fail < 1) {
+    const deficit = 1 - fail;
+    fail = 1;
+    // Eksik payı kısmi başarıdan düşür
+    let adjustedPartial = sac.partial - deficit;
+    if (adjustedPartial < 1) adjustedPartial = 1;
+    sac = { ...sac, partial: adjustedPartial };
+    // Geriye kalan payı başarıdan düş
+    const total = success + adjustedPartial + fail;
+    if (total > 100) {
+      const over = total - 100;
+      success = Math.max(1, success - over);
+    }
+  }
+}
     const roll = Math.random() * 100;
     let type;
     if (roll < success) type = "success";
