@@ -604,32 +604,50 @@ function AdminScreen() {
   });
 };
 
-  const handleApprove = () => {
-    if (!ritual || !ritual.sacrifice) return;
-    let bonus = 0;
-    if (ritual.sacrifice !== "absolute") bonus = totalBonus;
-    const sac = SACRIFICES.find((s) => s.key === ritual.sacrifice);
-    let success = sac.success + (sac.key !== "absolute" ? bonus : 0);
-    let fail = sac.fail - (sac.key !== "absolute" ? bonus : 0);
+ const handleApprove = () => {
+  if (!ritual || !ritual.sacrifice) return;
 
-// 🔮 FULL SACRIFICE KORUMA KOŞULU
-if (sac.key === "full") {
-  // Minimum %1 fail oranını koru
-  if (fail < 1) {
-    const deficit = 1 - fail;
-    fail = 1;
-    // Eksik payı kısmi başarıdan düşür
-    let adjustedPartial = sac.partial - deficit;
-    if (adjustedPartial < 1) adjustedPartial = 1;
-    sac = { ...sac, partial: adjustedPartial };
-    // Geriye kalan payı başarıdan düş
-    const total = success + adjustedPartial + fail;
-    if (total > 100) {
-      const over = total - 100;
-      success = Math.max(1, success - over);
+  let bonus = 0;
+  if (ritual.sacrifice !== "absolute") bonus = totalBonus;
+
+  let sac = SACRIFICES.find((s) => s.key === ritual.sacrifice);
+
+  let success = sac.success + (sac.key !== "absolute" ? bonus : 0);
+  let partial = sac.partial;
+  let fail = sac.fail - (sac.key !== "absolute" ? bonus : 0);
+
+  // 🧮 Full Sacrifice özel koruma
+  if (sac.key === "full") {
+    if (fail < 1) {
+      const deficit = 1 - fail;
+      fail = 1;
+      partial = Math.max(1, partial - deficit);
+
+      // Toplam 100'ü aşarsa başarıyı azalt
+      let total = success + partial + fail;
+      if (total > 100) {
+        const over = total - 100;
+        success = Math.max(1, success - over);
+      }
     }
   }
-}
+
+  // 🔮 Sonuç hesaplama
+  const roll = Math.random() * 100;
+  let type;
+  if (roll < success) type = "success";
+  else if (roll < success + partial) type = "partial";
+  else type = "fail";
+
+  const msg = MOTIVATION[type][Math.floor(Math.random() * MOTIVATION[type].length)];
+
+  setRitual({
+    ...ritual,
+    status: "result",
+    result: { type, message: msg },
+  });
+};
+
     const roll = Math.random() * 100;
     let type;
     if (roll < success) type = "success";
