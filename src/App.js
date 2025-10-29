@@ -8,25 +8,25 @@ const SACRIFICES = [
   { key: "coward", name: "Coward's Sacrifice", burn: 3, success: 10, partial: 30, fail: 60, icon: "🐇" },
   { key: "tiny", name: "Tiny Sacrifice", burn: 5, success: 25, partial: 45, fail: 30, icon: "🕯️" },
   { key: "high", name: "High Sacrifice", burn: 7, success: 50, partial: 35, fail: 15, icon: "🔥" },
-  { key: "full", name: "Full Sacrifice", burn: 9, success: 65, partial: 26, fail: 9, icon: "💎" },
-  { key: "absolute", name: "Absolute Sacrifice", burn: 12, success: 85, partial: 14, fail: 1, icon: "👑" }
+  { key: "full", name: "Full Sacrifice", burn: 9, success: 62, partial: 28, fail: 10, icon: "💎" },
+  { key: "absolute", name: "Absolute Sacrifice", burn: 12, success: 72, partial: 22, fail: 6, icon: "👑" }
 ];
 
 const MOTIVATION = {
   success: [
-    "The ritual was a wild success! You claimed your dream reward. 🥂",
-    "Night Bunny bows to your will! Power is yours tonight.",
-    "A flawless ascension—bask in your glory, chosen one!"
+    "Ritüel tam bir zaferdi! Hayalindeki ödülü kazandın. 🥂",
+    "Night Bunny iradene boyun eğiyor! Güç bu gece senin. 🥂",
+    "Kusursuz bir yükseliş—şanının tadını çıkar, seçilmiş olan! 🥂"
   ],
   partial: [
-    "Not quite perfect, but you earned two rewards. Fate’s a tease!",
-    "Partial success! Night Bunny admires your courage.",
-    "Halfway to greatness—keep risking, keep rising."
+    "Tam kusursuz değil ama iki ödül kazandın. Kader yine oyun oynuyor!",
+    "Kısmi başarı! Night Bunny cesaretine hayran.",
+    "Büyüklüğün yarısına ulaştın. Risk alıp yükselmeye devam et!"
   ],
   fail: [
-    "The ritual fizzled... Try again, luck may smile next time.",
-    "Night Bunny sighs—a failed sacrifice. Destiny’s cruel!",
-    "No reward this time. Sometimes the night bites back."
+    "Ritüel sönüp gitti... Tekrar dene, belki şans bu kez güler.",
+    "Night Bunny kankahalar atıyor... Kader acımasız!",
+    "Bu sefer ödül yok. Bazen gece dişlerini gösterir! "
   ]
 };
 
