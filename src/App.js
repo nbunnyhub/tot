@@ -5,11 +5,11 @@ import { ref, set, remove, onValue, off } from "firebase/database";
 const ADMIN_PASSWORD = "777888";
 
 const SACRIFICES = [
-  { key: "coward", name: "Coward's Sacrifice", burn: 3, success: 10, partial: 30, fail: 60, icon: "🐇" },
-  { key: "tiny", name: "Tiny Sacrifice", burn: 5, success: 25, partial: 45, fail: 30, icon: "🕯️" },
-  { key: "high", name: "High Sacrifice", burn: 7, success: 50, partial: 35, fail: 15, icon: "🔥" },
-  { key: "full", name: "Full Sacrifice", burn: 9, success: 62, partial: 28, fail: 10, icon: "💎" },
-  { key: "absolute", name: "Absolute Sacrifice", burn: 12, success: 72, partial: 22, fail: 6, icon: "👑" }
+  { key: "korkak", name: "Korkak Feda", burn: 3, success: 10, partial: 30, fail: 60, icon: "🐇" },
+  { key: "minik", name: "Minik Feda", burn: 5, success: 25, partial: 45, fail: 30, icon: "🕯️" },
+  { key: "yüksek", name: "Yüksek Feda", burn: 7, success: 50, partial: 35, fail: 15, icon: "🔥" },
+  { key: "tam", name: "Tam Feda", burn: 9, success: 62, partial: 28, fail: 10, icon: "💎" },
+  { key: "mutlak", name: "Mutlak Feda", burn: 12, success: 72, partial: 22, fail: 6, icon: "👑" }
 ];
 
 const MOTIVATION = {
