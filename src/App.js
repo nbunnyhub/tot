@@ -646,20 +646,7 @@ function AdminScreen() {
     status: "result",
     result: { type, message: msg },
   });
-};
-
-    const roll = Math.random() * 100;
-    let type;
-    if (roll < success) type = "success";
-    else if (roll < success + sac.partial) type = "partial";
-    else type = "fail";
-    const msg = MOTIVATION[type][Math.floor(Math.random() * MOTIVATION[type].length)];
-    setRitual({
-      ...ritual,
-      status: "result",
-      result: { type, message: msg }
-    });
-  };
+};    
 
   const resetResult = () => {
     clearRitual();
