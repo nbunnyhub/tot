@@ -684,6 +684,8 @@ if (type === "partial") {
   const rewardText =
     `Kazandığın ödüller:\n` +
     `• Kostüm: ${formatCostume(costume)}\n` +
+    `• Pozisyon: ${formatPose(pose)}\n` +
+    `• ve Kostüm: ${formatCostume(costume)}\n` +
     `• Pozisyon: ${formatPose(pose)}`;
 
   const base = MOTIVATION.partial[Math.floor(Math.random() * MOTIVATION.partial.length)];
