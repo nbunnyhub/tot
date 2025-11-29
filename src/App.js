@@ -28,6 +28,20 @@ function getRandomCostumePhoto() {
   return { type, number };
 }
 
+function getRandomCostumePhotoSecond() {
+  const typeSecond = COSTUME_TYPES[Math.floor(Math.random() * COSTUME_TYPES.length)];
+
+  let max;
+  if (typeSecond === "etek") max = 12;
+  else if (typeSecond === "tanga") max = 16;
+  else if (typeSecond === "star") max = 8;
+  else if (typeSecond === "özel") max = 8;
+
+  const numberSecond = Math.floor(Math.random() * max) + 1;
+
+  return { typeSecond, numberSecond };
+}
+
 function getRandomPosePhoto() {
   const rarity = PHOTO_RARITIES[Math.floor(Math.random() * PHOTO_RARITIES.length)];
   const number = Math.floor(Math.random() * 8) + 1;
@@ -35,12 +49,19 @@ function getRandomPosePhoto() {
   return { rarity, number };
 }
 
+function getRandomPosePhotoSecond() {
+  const raritySecond = PHOTO_RARITIES[Math.floor(Math.random() * PHOTO_RARITIES.length)];
+  const numberSecond = Math.floor(Math.random() * 8) + 1;
+
+  return { raritySecond, numberSecond };
+}
+
 function formatCostume(p) {
   return `${p.number} numaralı ${p.type}`;
 }
 
 function formatCostumeSecond(p) {
-  return `${p.number} numaralı ${p.type}`;
+  return `${p.numberSecond} numaralı ${p.typeSecond}`;
 }
 
 function formatPose(p) {
@@ -48,7 +69,7 @@ function formatPose(p) {
 }
 
 function formatPoseSecond(p) {
-  return `${p.number} numaralı pozisyon (${p.rarity})`;
+  return `${p.numberSecond} numaralı pozisyon (${p.raritySecond})`;
 }
 
 const PHOTO_RARITIES = ["nadir", "epik", "efsanevi"];
