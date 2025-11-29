@@ -12,6 +12,41 @@ const SACRIFICES = [
   { key: "mutlak", name: "Mutlak Feda", burn: 12, success: 72, partial: 22, fail: 6, icon: "👑" }
 ];
 
+const COSTUME_TYPES = ["etek", "tanga", "star", "özel"];
+
+function getRandomCostumePhoto() {
+  const type = COSTUME_TYPES[Math.floor(Math.random() * COSTUME_TYPES.length)];
+
+  let max;
+  if (type === "etek") max = 12;
+  else if (type === "tanga") max = 16;
+  else if (type === "star") max = 8;
+  else if (type === "özel") max = 8;
+
+  const number = Math.floor(Math.random() * max) + 1;
+
+  return { type, number };
+}
+
+function getRandomPosePhoto() {
+  const rarity = PHOTO_RARITIES[Math.floor(Math.random() * PHOTO_RARITIES.length)];
+  const number = Math.floor(Math.random() * 8) + 1;
+
+  return { rarity, number };
+}
+
+function formatCostume(p) {
+  return `${p.number} numaralı ${p.type}`;
+}
+
+function formatPose(p) {
+  return `${p.number} numaralı pozisyon (${p.rarity})`;
+}
+
+
+
+const PHOTO_RARITIES = ["nadir", "epik", "efsanevi"];
+
 const MOTIVATION = {
   success: [
     "Ritüel tam bir zaferdi! Hayalindeki ödülü kazandın. 🥂",
@@ -633,19 +668,37 @@ function AdminScreen() {
   }
 
   // 🔮 Sonuç hesaplama
-  const roll = Math.random() * 100;
-  let type;
-  if (roll < success) type = "success";
-  else if (roll < success + partial) type = "partial";
-  else type = "fail";
+const roll = Math.random() * 100;
+let type;
+if (roll < success) type = "success";
+else if (roll < success + partial) type = "partial";
+else type = "fail";
 
-  const msg = MOTIVATION[type][Math.floor(Math.random() * MOTIVATION[type].length)];
+let msg;
 
-  setRitual({
-    ...ritual,
-    status: "result",
-    result: { type, message: msg },
-  });
+// ⭐ PARTIAL SUCCESS → 2 ÖDÜL
+if (type === "partial") {
+  const costume = getRandomCostumePhoto();
+  const pose = getRandomPosePhoto();
+
+  const rewardText =
+    `Kazandığın ödüller:\n` +
+    `• Kostüm: ${formatCostume(costume)}\n` +
+    `• Pozisyon: ${formatPose(pose)}`;
+
+  const base = MOTIVATION.partial[Math.floor(Math.random() * MOTIVATION.partial.length)];
+  msg = `${base}\n\n${rewardText}`;
+
+} else {
+  msg = MOTIVATION[type][Math.floor(Math.random() * MOTIVATION[type].length)];
+}
+
+setRitual({
+  ...ritual,
+  status: "result",
+  result: { type, message: msg },
+});
+
 };    
 
   const resetResult = () => {
