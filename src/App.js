@@ -707,13 +707,15 @@ let msg;
 if (type === "partial") {
   const costume = getRandomCostumePhoto();
   const pose = getRandomPosePhoto();
+  const costumeSecond = getRandomCostumePhotoSecond();
+  const poseSecond = getRandomPosePhotoSecond();
 
   const rewardText =
     `Kazandığın ödüller:\n` +
     `• Kostüm: ${formatCostume(costume)}\n` +
     `• Pozisyon: ${formatPose(pose)}\n` +
-    `• ve Kostüm: ${formatCostumeSecond(costume)}\n` +
-    `• Pozisyon: ${formatPoseSecond(pose)}`;
+    `• ve Kostüm: ${formatCostumeSecond(costumeSecond)}\n` +
+    `• Pozisyon: ${formatPoseSecond(poseSecond)}`;
 
   const base = MOTIVATION.partial[Math.floor(Math.random() * MOTIVATION.partial.length)];
   msg = `${base}\n\n${rewardText}`;
