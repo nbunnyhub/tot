@@ -39,11 +39,17 @@ function formatCostume(p) {
   return `${p.number} numaralı ${p.type}`;
 }
 
+function formatCostumeSecond(p) {
+  return `${p.number} numaralı ${p.type}`;
+}
+
 function formatPose(p) {
   return `${p.number} numaralı pozisyon (${p.rarity})`;
 }
 
-
+function formatPoseSecond(p) {
+  return `${p.number} numaralı pozisyon (${p.rarity})`;
+}
 
 const PHOTO_RARITIES = ["nadir", "epik", "efsanevi"];
 
@@ -685,8 +691,8 @@ if (type === "partial") {
     `Kazandığın ödüller:\n` +
     `• Kostüm: ${formatCostume(costume)}\n` +
     `• Pozisyon: ${formatPose(pose)}\n` +
-    `• ve Kostüm: ${formatCostume(costume)}\n` +
-    `• Pozisyon: ${formatPose(pose)}`;
+    `• ve Kostüm: ${formatCostumeSecond(costume)}\n` +
+    `• Pozisyon: ${formatPoseSecond(pose)}`;
 
   const base = MOTIVATION.partial[Math.floor(Math.random() * MOTIVATION.partial.length)];
   msg = `${base}\n\n${rewardText}`;
